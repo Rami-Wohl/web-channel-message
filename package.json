@@ -1,5 +1,5 @@
 {
-	"name": "@r_wohl/web-channel-messenger",
+	"name": "@r_wohl/web-channel-message",
 	"version": "1.0.0",
 	"description": "A light weight type-safe library for communicating via the Channel Message Web API",
 	"main": "dist/index.js",
