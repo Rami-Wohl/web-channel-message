@@ -1,0 +1,19 @@
+{
+	"name": "@r_wohl/web-channel-messenger",
+	"version": "1.0.0",
+	"description": "A light weight type-safe library for communicating via the Channel Message Web API",
+	"main": "index.ts",
+	"scripts": {
+		"test": "test"
+	},
+	"keywords": [
+		"channel-message",
+		"channel",
+		"web-api"
+	],
+	"author": "Rami Wohl",
+	"license": "ISC",
+	"devDependencies": {
+		"typescript": "^5.3.3"
+	}
+}
