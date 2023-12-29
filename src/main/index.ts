@@ -22,10 +22,13 @@ class SharedWebChannel {
 			return;
 		}
 
-		this.worker = new SharedWorker(new URL("worker.ts", import.meta.url), {
-			name: "web-channel-messenger-worker",
-			type: "module",
-		});
+		this.worker = new SharedWorker(
+			new URL("../worker/worker.js", import.meta.url),
+			{
+				name: "web-channel-messenger-worker",
+				type: "module",
+			}
+		);
 
 		this.worker.port.onmessage = function (event: MessageEvent) {
 			const receivedMessage = event.data as MessageWithCallback;

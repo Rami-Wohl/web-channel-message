@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 type Message =
 	| {
 			name?: string;
@@ -11,10 +13,6 @@ type Message =
 type MessageWithCallback = Exclude<Message, { type: "close" }> & {
 	callbackKey?: string;
 };
-
-// interface SharedWorkerGlobalScope {
-// 	onconnect: (event: MessageEvent) => void;
-// }
 
 const _self: SharedWorkerGlobalScope = self as any;
 
