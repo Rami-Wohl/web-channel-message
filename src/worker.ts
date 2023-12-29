@@ -1,8 +1,20 @@
-import { Message, MessageWithCallback } from "./index";
+type Message =
+	| {
+			name?: string;
+			type: "broadcast" | "all";
+			payload: any;
+	  }
+	| {
+			type: "close";
+	  };
 
-interface SharedWorkerGlobalScope {
-	onconnect: (event: MessageEvent) => void;
-}
+type MessageWithCallback = Exclude<Message, { type: "close" }> & {
+	callbackKey?: string;
+};
+
+// interface SharedWorkerGlobalScope {
+// 	onconnect: (event: MessageEvent) => void;
+// }
 
 const _self: SharedWorkerGlobalScope = self as any;
 

@@ -1,4 +1,4 @@
-export type Message =
+type Message =
 	| {
 			name?: string;
 			type: "broadcast" | "all";
@@ -8,7 +8,7 @@ export type Message =
 			type: "close";
 	  };
 
-export type MessageWithCallback = Exclude<Message, { type: "close" }> & {
+type MessageWithCallback = Exclude<Message, { type: "close" }> & {
 	callbackKey?: string;
 };
 
@@ -22,7 +22,7 @@ class SharedWebChannel {
 			return;
 		}
 
-		this.worker = new SharedWorker(new URL("./worker.ts"), {
+		this.worker = new SharedWorker(new URL("worker.ts", import.meta.url), {
 			name: "web-channel-messenger-worker",
 			type: "module",
 		});
