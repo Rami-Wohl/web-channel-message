@@ -23,10 +23,10 @@ class SharedWebChannel {
 		}
 
 		this.worker = new SharedWorker(
-			new URL("../worker/worker.js", import.meta.url),
+			new URL("./worker.js", import.meta.url),
 			{
-				name: "web-channel-messenger-worker",
 				type: "module",
+				name: "web-channel-messenger-worker",
 			}
 		);
 

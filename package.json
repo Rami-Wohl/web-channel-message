@@ -2,14 +2,24 @@
 	"name": "@r_wohl/web-channel-message",
 	"version": "2.0.0",
 	"description": "A light weight type-safe library for communicating via the Channel Message Web API",
-	"main": "dist/main/index.js",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/index.js",
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"scripts": {
-		"build": "rimraf dist && tsc -b src/main"
+		"build": "tsup"
 	},
 	"keywords": [
 		"worker",
 		"shared-worker",
-		"web-api"
+		"web-api",
+		"typescript"
 	],
 	"author": "Rami Wohl",
 	"license": "ISC",
@@ -19,11 +29,12 @@
 	},
 	"files": [
 		"/dist",
+		"/src",
 		"package.json",
 		"README.md"
 	],
 	"devDependencies": {
-		"rimraf": "^5.0.5",
+		"tsup": "^8.0.1",
 		"typescript": "^5.3.3"
 	}
 }
