@@ -2,9 +2,14 @@
 	"name": "@r_wohl/web-channel-message",
 	"version": "2.0.0",
 	"description": "A light weight type-safe library for communicating via the Channel Message Web API",
-	"main": "dist/main/index.js",
+	"main": "dist/cjs/main/index.js",
+	"types": "dist/cjs/main/index.d.ts",
+	"module": "dist/esm/main/index.mjs",
+	"type": "module",
 	"scripts": {
-		"build": "rimraf dist && tsc -b src/main"
+		"build:cjs": "tsc --build src/main/tsconfig.cjs.json",
+		"build:esm": "tsc --build src/main/tsconfig.esm.json",
+		"build": "rimraf dist && npm run build:cjs && npm run build:esm"
 	},
 	"keywords": [
 		"worker",

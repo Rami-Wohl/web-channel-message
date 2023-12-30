@@ -1,0 +1,7 @@
+{
+	"extends": "../base-tsconfig.cjs.json",
+	"compilerOptions": {
+		"lib": ["esnext", "dom"]
+	},
+	"references": [{ "path": "../worker/tsconfig.cjs.json" }]
+}

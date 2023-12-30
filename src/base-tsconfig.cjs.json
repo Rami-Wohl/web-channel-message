@@ -1,11 +1,11 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "esnext",
+		"module": "commonjs",
 		"strict": true,
 		"moduleResolution": "node",
 		"rootDir": ".",
-		"outDir": "../dist",
+		"outDir": "../dist/cjs",
 		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
