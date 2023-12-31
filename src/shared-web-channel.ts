@@ -107,5 +107,9 @@ export class SharedWebChannel {
 		});
 		this.worker?.port.close();
 		this.worker = undefined;
+
+		window.removeEventListener("beforeunload", () => {
+			this.terminate();
+		});
 	}
 }
