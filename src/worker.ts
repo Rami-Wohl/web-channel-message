@@ -1,18 +1,6 @@
 /// <reference lib="webworker" />
 
-type Message =
-	| {
-			name?: string;
-			type: "broadcast" | "all";
-			payload: any;
-	  }
-	| {
-			type: "close";
-	  };
-
-type MessageWithCallback = Exclude<Message, { type: "close" }> & {
-	callbackKey?: string;
-};
+import { ConnectionUpdate, WorkerMessage } from "./types";
 
 const _self: SharedWorkerGlobalScope = self as any;
 
@@ -29,22 +17,19 @@ _self.onconnect = function (e) {
 
 	connections.add(port);
 
+	connections.forEach((conn) => {
+		const message: ConnectionUpdate = {
+			type: "internal",
+			data: {
+				connections: connections.size,
+			},
+		};
+
+		conn.postMessage(message);
+	});
+
 	port.onmessage = function (e) {
-		const message = e.data as Message | MessageWithCallback;
-
-		if (message && message.type === "broadcast") {
-			connections.forEach((conn) => {
-				if (conn !== port) {
-					conn.postMessage(message);
-				}
-			});
-		}
-
-		if (message && message.type === "all") {
-			connections.forEach((conn) => {
-				conn.postMessage(message);
-			});
-		}
+		const message = e.data as WorkerMessage;
 
 		if (message && message.type === "close") {
 			port.close();
@@ -52,6 +37,33 @@ _self.onconnect = function (e) {
 			console.log("deleting port: ", port);
 
 			connections.delete(port);
+
+			connections.forEach((conn) => {
+				const message: ConnectionUpdate = {
+					type: "internal",
+					data: {
+						connections: connections.size,
+					},
+				};
+
+				conn.postMessage(message);
+			});
+
+			return;
+		}
+
+		if (message && message.action === "broadcast") {
+			connections.forEach((conn) => {
+				if (conn !== port) {
+					conn.postMessage(message);
+				}
+			});
+		}
+
+		if (message && message.action === "all") {
+			connections.forEach((conn) => {
+				conn.postMessage(message);
+			});
 		}
 	};
 

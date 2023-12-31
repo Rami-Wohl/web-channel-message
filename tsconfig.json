@@ -6,7 +6,6 @@
 		"moduleResolution": "node",
 		"rootDir": ".",
 		"outDir": "dist",
-		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,

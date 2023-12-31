@@ -13,7 +13,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup"
+		"build": "tsup src/worker.ts src/index.ts --dts src/index.ts"
 	},
 	"keywords": [
 		"worker",
