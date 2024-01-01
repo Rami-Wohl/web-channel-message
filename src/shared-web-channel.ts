@@ -1,3 +1,4 @@
+import { supportsWorkerType } from "./compatibility";
 import SimpleSubject from "./simple-subject";
 import {
 	ObserverMessage,
@@ -15,6 +16,7 @@ export class SharedWebChannel {
 	public worker: SharedWorker | undefined;
 	public subject: SimpleSubject;
 	public connections: number | undefined;
+	private sharedWorkerModulesSupported: boolean = false;
 	private connectionsUpdateCallback: ((...args: any[]) => any) | undefined;
 
 	/**
@@ -25,6 +27,16 @@ export class SharedWebChannel {
 		this.subject = new SimpleSubject();
 
 		if (typeof window == "undefined") {
+			return;
+		}
+
+		this.sharedWorkerModulesSupported = supportsWorkerType();
+
+		if (!this.sharedWorkerModulesSupported) {
+			console.warn(
+				"The shared worker module feature doesn't appear to be supported in this environment"
+			);
+
 			return;
 		}
 
@@ -70,7 +82,18 @@ export class SharedWebChannel {
 			}
 		};
 
+		// for desktop browers
 		window.addEventListener("beforeunload", () => {
+			this.terminate();
+		});
+
+		// for iOS Safari
+		window.addEventListener("unload", () => {
+			this.terminate();
+		});
+
+		// for iOS/Android in general
+		window.addEventListener("pagehide", () => {
 			this.terminate();
 		});
 
@@ -100,6 +123,14 @@ export class SharedWebChannel {
 	 *
 	 */
 	sendMessage(message: UserMessage) {
+		if (!this.sharedWorkerModulesSupported) {
+			console.warn(
+				"The shared worker module feature doesn't appear to be supported in this environment"
+			);
+
+			return;
+		}
+
 		this.worker?.port.postMessage(message);
 	}
 
@@ -123,6 +154,14 @@ export class SharedWebChannel {
 		this.worker = undefined;
 
 		window.removeEventListener("beforeunload", () => {
+			this.terminate();
+		});
+
+		window.removeEventListener("unload", () => {
+			this.terminate();
+		});
+
+		window.removeEventListener("pagehide", () => {
 			this.terminate();
 		});
 	}
