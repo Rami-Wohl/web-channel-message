@@ -2,29 +2,39 @@ import { ChannelObserver } from "./channel-observer";
 import { ObserverMessage } from "./types";
 
 class SimpleSubject {
-	private observers: ChannelObserver[] = [];
+	private observers: Map<string, ChannelObserver[]> = new Map();
 
-	subscribe(observer: ChannelObserver) {
-		this.observers.push(observer);
+	subscribe(observer: ChannelObserver, key: string = "default") {
+		if (this.observers.has(key)) {
+			this.observers.get(key)?.push(observer);
+		} else {
+			this.observers.set(key, [observer]);
+		}
 	}
 
-	unsubscribe(observer: ChannelObserver) {
-		const observerIndex = this.observers.indexOf(observer);
+	unsubscribe(observer: ChannelObserver, key: string = "default") {
+		const observersForKey = this.observers.get(key);
 
-		if (observerIndex === -1) {
-			return;
-		}
+		if (!observersForKey) return;
 
-		this.observers.splice(observerIndex, 1);
+		const observerIndex = observersForKey.indexOf(observer);
+
+		if (observerIndex === -1) return;
+
+		observersForKey.splice(observerIndex, 1);
 	}
 
 	update(data: ObserverMessage) {
-		//TODO: turn observers into Map with event key as key
-		// if there's an event key then only update those observers
-		// else update all
-
-		for (const observer of this.observers) {
-			observer.update(data);
+		for (const [key, observerGroup] of this.observers.entries()) {
+			if (
+				data.key === "all" ||
+				data.key === key ||
+				(data.key === undefined && key === "default")
+			) {
+				for (const observer of observerGroup) {
+					observer.update(data);
+				}
+			}
 		}
 	}
 }

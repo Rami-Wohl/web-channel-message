@@ -23,9 +23,10 @@ channel.registerCallback("logout", logoutUser);
 
 function handleClick() {
     channel.sendMessage({
-        type: "broadcast",
-        callbackKey: "logout",
-    })
+      type: "callback",
+      action: "all",
+      callbackKey: "logout",
+    });
 }
 ```
 

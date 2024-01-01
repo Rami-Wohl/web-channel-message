@@ -2,7 +2,7 @@ export type ActionType = "broadcast" | "all";
 
 export type ObserverMessage = {
 	type: "observer";
-	id: string;
+	key?: string;
 	action: ActionType;
 	payload: any;
 };
@@ -27,7 +27,7 @@ export type ConnectionUpdate = {
 
 type InternalMessage = CloseMessage | ConnectionUpdate;
 
-type UserMessage = CallbackMessage | ObserverMessage;
+export type UserMessage = CallbackMessage | ObserverMessage;
 
 export type WorkerMessage = UserMessage | CloseMessage;
 

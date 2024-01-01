@@ -2,14 +2,19 @@
 
 ## [Unreleased]
 
-## [2.1.1] - 2024-01-01
+## [3.0.0] - 2024-01-01
 
 ### Added
 
 -   This changelog
 -   Added optional name to `SharedWebChannel` constructor
 -   Added connection size to `SharedWebChannel` API
--   Added `ChannelObserver` API
+-   Added `ChannelObserver`
+-   Added types to export
+
+### Changed
+
+-   Breaking changes for the `SharedWebChannel` `postMessage` API
 
 ## [2.1.0] - 2023-12-30
 

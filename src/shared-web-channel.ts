@@ -1,5 +1,10 @@
 import SimpleSubject from "./simple-subject";
-import { ObserverMessage, ConnectionUpdate, Message } from "./types";
+import {
+	ObserverMessage,
+	ConnectionUpdate,
+	Message,
+	UserMessage,
+} from "./types";
 
 const callbacks: Map<string, (...args: any[]) => any> = new Map();
 
@@ -9,7 +14,7 @@ const callbacks: Map<string, (...args: any[]) => any> = new Map();
 export class SharedWebChannel {
 	public worker: SharedWorker | undefined;
 	public subject: SimpleSubject;
-	public connections: number | undefined;
+	private connectionsUpdateCallback: ((...args: any[]) => any) | undefined;
 
 	/**
 	 * @constructor
@@ -34,8 +39,10 @@ export class SharedWebChannel {
 			this.updateObservers(data);
 		};
 
-		const updateConnectionData = (data: ConnectionUpdate) => {
-			this.connections = data.data.connections;
+		const forwardConnectionUpdate = (data: ConnectionUpdate) => {
+			if (this.connectionsUpdateCallback) {
+				this.connectionsUpdateCallback(data.data.connections);
+			}
 		};
 
 		this.worker.port.onmessage = function (event: MessageEvent) {
@@ -57,7 +64,7 @@ export class SharedWebChannel {
 			}
 
 			if (receivedMessage.type === "internal") {
-				updateConnectionData(receivedMessage);
+				forwardConnectionUpdate(receivedMessage);
 			}
 		};
 
@@ -75,7 +82,7 @@ export class SharedWebChannel {
 	}
 
 	/**
-	 * @param {Message} message
+	 * @param {UserMessage} message
 	 *
 	 * Send a `Message` object to the SharedWorker
 	 * so it can be forwarded to other active channels.
@@ -83,13 +90,14 @@ export class SharedWebChannel {
 	 * @example
 	 *
 	 * channel.sendMessage({
-	 * 		type: 'broadcast',
-	 * 		payload: color,
-	 * 		callbackKey: "set-bg-color",
+	 *   type: "callback",
+	 *   action: "broadcast",
+	 *   payload: "bg-red-500",
+	 *   callbackKey: "set-bg-color",
 	 *});
 	 *
 	 */
-	sendMessage(message: Message) {
+	sendMessage(message: UserMessage) {
 		this.worker?.port.postMessage(message);
 	}
 
@@ -98,6 +106,10 @@ export class SharedWebChannel {
 	 */
 	registerCallback(key: string, callback: (...args: any[]) => any) {
 		callbacks.set(key, callback);
+	}
+
+	onConnectionsUpdate(callback: (...args: any[]) => any) {
+		this.connectionsUpdateCallback = callback;
 	}
 
 	private terminate() {
