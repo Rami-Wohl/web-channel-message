@@ -12,7 +12,7 @@
 
 <br>
 
-## Example:
+## Example
 
 <br>
 
@@ -36,16 +36,17 @@ For a working example check out [this demo](https://shared-worker-package-demo.v
 
 <br>
 
-## Install:
+## Install
 
 <br>
-NPM:
+
+NPM
 
 ```sh
 npm i @r_wohl/web-channel-message
 ```
 
-YARN:
+YARN
 
 ```sh
 yarn add @r_wohl/web-channel-message
@@ -53,7 +54,7 @@ yarn add @r_wohl/web-channel-message
 
 <br>
 
-# Usage:
+# Usage
 
 <br>
 
@@ -81,7 +82,7 @@ const anotherChannel = new SharedWebChannel('second-channel');
 
 <br>
 
-## Tracking open connections:
+## Tracking open connections
 
 ---
 
@@ -106,7 +107,11 @@ If a callback is registered to be executed when the number of open connections c
 
 <br>
 
-## Sending messages:
+<i>NOTE: Updating </i>`channel.connections`<i> when a page/session is closed relies on </i>`beforeunload`/`unload`/`pagehide`<i> events, which do not fire in some browsers/circumstances. See </i> [caveats](#caveats).
+
+<br>
+
+## Sending messages
 
 ---
 
@@ -155,9 +160,11 @@ Furthermore, in `"callback"` mode you'll need to specify a `callbackKey`. In `"o
 
 <br>
 
-## Handling messages:
+## Handling messages
 
 ---
+
+<br>
 
 When messages are received in the `SharedWebChannel` you can either handle them with a registered callback, or with a `ChannelObserver`.
 
@@ -256,6 +263,24 @@ Finally, you can unsubscribe a `ChannelObserver` from the `SharedWebChannel` sub
 
   }, []);
 ```
+
+<br>
+
+# Caveats
+
+### Shared Worker modules compatibility
+
+<br>
+
+[Not every browser](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker#browser_compatibility) supports Shared Worker modules at the moment. If instantiating a Shared Worker fails in the `SharedWebChannel` constructor, the `SharedWebChannel` will detect this and fall back to executing callbacks and updating `ChannelObserver` instances for that application instance only.
+
+<br>
+
+### Updating connection status
+
+<br>
+
+It is not possible to accurately keep track of the number of active application sessions in all circumstances and on all browsers in a straightforward manner. In almost all environments closing a tab/navigating away/reloading the page will cause the connection count to be updated properly. However, on iOS -for example-, terminating a page with a close button does not cause a unique event to fire that can be identified to close that connection port inside the shared worker. So until I come up with a better solution, the connection count cannot be fully trusted in environments where closing/reloading pages can be done without firing `beforeunload`/`unload`/`pagehide` events.
 
 <br>
 

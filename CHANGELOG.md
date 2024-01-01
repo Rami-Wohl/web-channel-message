@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
--   Extended JSDocs
+-   Nothing for now (but open to suggestions!)
+
+## [3.0.2] - 2024-01-01
+
+### Added
+
+-   Added JSDocs with some examples for moest exposed methods
+-   Added known caveats to this library to README.md
 
 ## [3.0.1] - 2024-01-01
 

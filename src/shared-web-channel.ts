@@ -10,9 +10,6 @@ const callbacks: Map<string, (...args: any[]) => any> = new Map();
 
 let isSupported: boolean = true;
 
-/**
- * @name SharedWebChannel
- */
 export class SharedWebChannel {
 	public worker: SharedWorker | undefined;
 	public subject: SimpleSubject;
@@ -20,8 +17,11 @@ export class SharedWebChannel {
 	private connectionsUpdateCallback: ((...args: any[]) => any) | undefined;
 
 	/**
-	 * @constructor
-	 * @param {string?} name - The SharedWorker name, defaults to "default-shared-worker".
+	 * Constructs a new SharedWebChannel instance. If you'll need more then one
+	 * instance throughout your application, it is recommended to provide a name.
+	 *
+	 * When omitted, the name will default to "default-shared-worker".
+	 *
 	 */
 	constructor(name: string = "default-shared-worker") {
 		this.subject = new SimpleSubject();
@@ -107,16 +107,17 @@ export class SharedWebChannel {
 	}
 
 	/**
-	 * @param {UserMessage} message
-	 *
-	 * Send a `Message` object to the SharedWorker
+	 * Sends a `UserMessage` object to the SharedWorker
 	 * so it can be forwarded to other active channels.
 	 *
 	 * @example
 	 *
 	 * channel.sendMessage({
+	 *   //type: "callback" to trigger a callback function with corresponding callbackKey or "observer" to update one or more ChannelObservers.
 	 *   type: "callback",
+	 *  // action: "broadcast" to send to all OTHER app instances or "all" to send to all.
 	 *   action: "broadcast",
+	 *  // payload: optional; in "callback" mode this will be your callback's input
 	 *   payload: "bg-red-500",
 	 *   callbackKey: "set-bg-color",
 	 *});
@@ -149,12 +150,28 @@ export class SharedWebChannel {
 	}
 
 	/**
-	 * TODO: jsdocs registerCallback
+	 * Registers a callback with a key in a Map object. When a message sent with type `callback`
+	 * is received the `SharedWebChannel` will look for a callback with the corresponding
+	 * `callbackKey`, and -if found- execute it with the value in `payload` as input.
+	 *
+	 * @example
+	 *
+	 * channel.registerCallback("set-bg-color", setBgColor);
+	 *
 	 */
 	registerCallback(key: string, callback: (...args: any[]) => any) {
 		callbacks.set(key, callback);
 	}
 
+	/**
+	 * Registers a callback to be executed when the number of open connections
+	 * (the number of open browser session in different tabs/windows) changes.
+	 *
+	 * @example
+	 *
+	 * channel.onConnectionsUpdate(setInstances);
+	 *
+	 */
 	onConnectionsUpdate(callback: (...args: any[]) => any) {
 		this.connectionsUpdateCallback = callback;
 	}

@@ -5,10 +5,23 @@ export class ChannelObserver {
 	private onUpdate: (...args: any[]) => any;
 
 	/**
-	 * @constructor
-	 * @param channel
-	 * @param onUpdate
-	 * @param key
+	 * Constructs a new `ChannelObserver` instance, that immediately subscribes to the provided channel's subject.
+	 * When the `SharedWebChannel` receives a message with action set to `observer`, it will update it's subject's subscribed observers.
+	 * If a `key` is provided then only messages with that key or `key: "all"` will trigger it's `onUpdate` function.
+	 *
+	 * @example
+	 *
+	 * const observer = new ChannelObserver(channel, (message) => {
+	 *     const payload = message.payload as MyCustomType;
+	 *
+	 *     if (payload) {
+	 *         handlePayload(payload);
+	 *     }
+	 * });
+	 *
+	 * //and to cleanup the observer:
+	 *
+	 * channel.subject.unsubscribe(observer);
 	 */
 	constructor(
 		channel: SharedWebChannel,
