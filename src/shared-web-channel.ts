@@ -1,4 +1,3 @@
-import { supportsWorkerType } from "./compatibility";
 import SimpleSubject from "./simple-subject";
 import {
 	ObserverMessage,
@@ -9,14 +8,15 @@ import {
 
 const callbacks: Map<string, (...args: any[]) => any> = new Map();
 
+let isSupported: boolean = true;
+
 /**
  * @name SharedWebChannel
  */
 export class SharedWebChannel {
 	public worker: SharedWorker | undefined;
 	public subject: SimpleSubject;
-	public connections: number | undefined;
-	private sharedWorkerModulesSupported: boolean = false;
+	public connections: number = 1;
 	private connectionsUpdateCallback: ((...args: any[]) => any) | undefined;
 
 	/**
@@ -30,23 +30,23 @@ export class SharedWebChannel {
 			return;
 		}
 
-		this.sharedWorkerModulesSupported = supportsWorkerType();
+		try {
+			this.worker = new SharedWorker(
+				new URL("./worker.js", import.meta.url),
+				{
+					type: "module",
+					name,
+				}
+			);
+		} catch (e) {
+			isSupported = false;
 
-		if (!this.sharedWorkerModulesSupported) {
 			console.warn(
 				"The shared worker module feature doesn't appear to be supported in this environment"
 			);
 
 			return;
 		}
-
-		this.worker = new SharedWorker(
-			new URL("./worker.js", import.meta.url),
-			{
-				type: "module",
-				name,
-			}
-		);
 
 		const forwardUpdate = (data: ObserverMessage) => {
 			this.updateObservers(data);
@@ -123,10 +123,24 @@ export class SharedWebChannel {
 	 *
 	 */
 	sendMessage(message: UserMessage) {
-		if (!this.sharedWorkerModulesSupported) {
+		// if sharedworkers are not supported, but the application instance from
+		// which the message is sent is supposed to execute a callback or update an observer,
+		// then execute the corresponding callback/update the corresponding observers
+		if (!isSupported) {
 			console.warn(
 				"The shared worker module feature doesn't appear to be supported in this environment"
 			);
+
+			if (message.type === "callback" && message.action === "all") {
+				const callback = callbacks.get(message.callbackKey);
+				if (callback) {
+					callback(message.payload);
+				}
+			}
+
+			if (message.type === "observer" && message.action === "all") {
+				this.updateObservers(message);
+			}
 
 			return;
 		}
