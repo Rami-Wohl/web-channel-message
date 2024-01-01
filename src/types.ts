@@ -4,14 +4,14 @@ export type ObserverMessage = {
 	type: "observer";
 	key?: string;
 	action: ActionType;
-	payload: any;
+	payload?: any;
 };
 
 type CallbackMessage = {
 	type: "callback";
 	callbackKey: string;
 	action: ActionType;
-	payload: any;
+	payload?: any;
 };
 
 type CloseMessage = {
