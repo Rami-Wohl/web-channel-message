@@ -20,7 +20,7 @@ type CloseMessage = {
 
 export type ConnectionUpdate = {
 	type: "internal";
-	data: {
+	channelData: {
 		connections: number;
 	};
 };

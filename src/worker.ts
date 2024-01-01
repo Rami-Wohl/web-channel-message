@@ -20,7 +20,7 @@ _self.onconnect = function (e) {
 	connections.forEach((conn) => {
 		const message: ConnectionUpdate = {
 			type: "internal",
-			data: {
+			channelData: {
 				connections: connections.size,
 			},
 		};
@@ -41,7 +41,7 @@ _self.onconnect = function (e) {
 			connections.forEach((conn) => {
 				const message: ConnectionUpdate = {
 					type: "internal",
-					data: {
+					channelData: {
 						connections: connections.size,
 					},
 				};

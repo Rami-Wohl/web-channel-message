@@ -14,6 +14,7 @@ const callbacks: Map<string, (...args: any[]) => any> = new Map();
 export class SharedWebChannel {
 	public worker: SharedWorker | undefined;
 	public subject: SimpleSubject;
+	public connections: number | undefined;
 	private connectionsUpdateCallback: ((...args: any[]) => any) | undefined;
 
 	/**
@@ -40,8 +41,9 @@ export class SharedWebChannel {
 		};
 
 		const forwardConnectionUpdate = (data: ConnectionUpdate) => {
+			this.connections = data.channelData.connections;
 			if (this.connectionsUpdateCallback) {
-				this.connectionsUpdateCallback(data.data.connections);
+				this.connectionsUpdateCallback(data.channelData.connections);
 			}
 		};
 
