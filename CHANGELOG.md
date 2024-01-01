@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+-   Extended JSDocs
+
 ## [3.0.0] - 2024-01-01
 
 ### Added
@@ -14,7 +16,7 @@
 
 ### Changed
 
--   Breaking changes for the `SharedWebChannel` `postMessage` API
+-   Breaking changes for the `SharedWebChannel` sendMessage API
 
 ## [2.1.0] - 2023-12-30
 
