@@ -4,6 +4,14 @@
 
 -   Extended JSDocs
 
+## [3.0.1] - 2024-01-01
+
+### Added
+
+-   Feature detection for Shared Worker modules
+-   Failing gracefully in case of no Shared Worker module support
+-   More event listeners to handle reload/close better on all devices
+
 ## [3.0.0] - 2024-01-01
 
 ### Added
